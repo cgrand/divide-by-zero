@@ -1,0 +1,60 @@
+(ns acme.main
+  (:require ["package:flutter/material.dart" :as m]
+            [cljd.flutter :as f]))
+
+
+#_(defn make-label
+  "This  works when returning widget directly"
+  [heading]
+  (f/widget
+  
+   :watch [h heading]
+  
+   (m/Text h
+           .style (m/TextStyle
+                   .color m.Colors/red
+                   .fontSize 32.0))))
+
+
+(defn make-label
+  "When returning widget inside a datastructure like a map, it causes Devide by zero error during compilation"
+  [heading]
+  {:child (f/widget
+          
+           :watch [h heading]
+          
+           (m/Text h
+                   .style (m/TextStyle
+                           .color m.Colors/red
+                           .fontSize 32.0)))})
+
+#_(defn make-label
+  "But if we don't watch on the function argument, it works..?"
+  [heading]
+  {:child (f/widget
+
+           :watch [h (atom "Let's get coding!")]
+
+           (m/Text h
+                   .style (m/TextStyle
+                           .color m.Colors/red
+                           .fontSize 32.0)))})
+
+(defn main []
+  (f/run
+   (m/MaterialApp
+    .title "Welcome to Flutter"
+    .theme (m/ThemeData .primarySwatch m.Colors/pink))
+   .home
+   (m/Scaffold
+    .appBar (m/AppBar
+             .title (m/Text "Welcome to ClojureDart")))
+   .body
+   m/Center
+
+   (or
+
+    (-> (make-label (atom "Let's get coding!"))
+        :child)
+
+    (make-label (atom "Let's get coding!")))))
